@@ -1,4 +1,7 @@
 import * as THREE from 'three';
+import { Terrain } from '../environment/Terrain';
+import { ParkElements } from '../environment/ParkElements';
+import { Skybox } from '../environment/Skybox';
 
 export class SceneSetup {
     scene: THREE.Scene;
@@ -6,52 +9,60 @@ export class SceneSetup {
     constructor() {
         this.scene = new THREE.Scene();
         this.setupLighting();
-        this.setupGround();
+        this.setupTerrain();
+        this.setupParkElements();
         this.setupSkybox();
     }
     
     setupLighting() {
+        // Enhanced lighting setup
+        
         // Ambient light for base illumination
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
         this.scene.add(ambientLight);
         
-        // Directional light to simulate sunlight
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-        directionalLight.position.set(10, 20, 10);
+        // Main directional light (sun)
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+        directionalLight.position.set(50, 100, 30);
         directionalLight.castShadow = true;
         
         // Improve shadow quality
         directionalLight.shadow.mapSize.width = 2048;
         directionalLight.shadow.mapSize.height = 2048;
         directionalLight.shadow.camera.near = 0.5;
-        directionalLight.shadow.camera.far = 50;
-        directionalLight.shadow.camera.left = -20;
-        directionalLight.shadow.camera.right = 20;
-        directionalLight.shadow.camera.top = 20;
-        directionalLight.shadow.camera.bottom = -20;
+        directionalLight.shadow.camera.far = 200;
+        directionalLight.shadow.camera.left = -50;
+        directionalLight.shadow.camera.right = 50;
+        directionalLight.shadow.camera.top = 50;
+        directionalLight.shadow.camera.bottom = -50;
+        
+        // Additional fill light
+        const fillLight = new THREE.DirectionalLight(0x9090ff, 0.4);
+        fillLight.position.set(-50, 30, -50);
         
         this.scene.add(directionalLight);
+        this.scene.add(fillLight);
+        
+        // Helper to visualize light direction (for development)
+        // const helper = new THREE.DirectionalLightHelper(directionalLight, 10);
+        // this.scene.add(helper);
     }
     
-    setupGround() {
-        // Create a simple ground plane
-        const groundGeometry = new THREE.PlaneGeometry(50, 50);
-        const groundMaterial = new THREE.MeshStandardMaterial({
-            color: 0x3a7e52,
-            roughness: 0.8,
-            metalness: 0.2
-        });
-        
-        const ground = new THREE.Mesh(groundGeometry, groundMaterial);
-        ground.rotation.x = -Math.PI / 2;
-        ground.position.y = 0;
-        ground.receiveShadow = true;
-        
-        this.scene.add(ground);
+    setupTerrain() {
+        // Use our new terrain class instead of a simple plane
+        const terrain = new Terrain(100, 100, 64);
+        this.scene.add(terrain.mesh);
+    }
+    
+    setupParkElements() {
+        // Add trees, benches and other park elements
+        const parkElements = new ParkElements();
+        this.scene.add(parkElements.elementsGroup);
     }
     
     setupSkybox() {
-        // Simple skybox color for now
-        this.scene.background = new THREE.Color(0x87ceeb);
+        // Add our gradient skybox
+        const skybox = new Skybox();
+        this.scene.add(skybox.mesh);
     }
 }
