@@ -38,12 +38,12 @@ A 3D browser game where you pilot a cat-controlled plane to protect your town fr
 - Add ambient sound effects
 - Setup environment lighting
 
-### 3. Flight Controls
+### 3. Driving Controls
 
-- Implement basic flight physics
+- Implement basic driving physics
 - Add keyboard/mouse controls
 - Setup camera following mechanics
-- Add flight effects (engine sound, trails)
+- Add driving effects (engine sound, trails)
 - Implement collision detection
 
 ### 4. Enemy System
